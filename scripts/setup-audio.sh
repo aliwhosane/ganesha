@@ -24,19 +24,28 @@ if [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
 elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
   sudo yum update -y
   
-  # Enable EPEL and RPMFusion repositories (ffmpeg is not in default Amazon Linux repos)
+  # Amazon Linux 2023 deliberately dropped EPEL support. We install a static ffmpeg binary instead.
   if [[ "$OS" == "amzn" ]]; then
-    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm || true
-    sudo yum install -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm || true
-  else 
-    sudo yum install -y epel-release || true
-  fi
+    # Install base dependencies and Chromium required shared libraries
+    sudo yum install -y Xvfb pulseaudio curl git tar \
+      alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
+      libXcomposite libXcursor libXdamage libXext libXi libXrandr \
+      libXtst pango mesa-libgbm
 
-  # Install base dependencies and Chromium required shared libraries
-  sudo yum install --enablerepo=rpmfusion-free-updates -y Xvfb pulseaudio ffmpeg curl git \
-    alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
-    libXcomposite libXcursor libXdamage libXext libXi libXrandr \
-    libXtst pango mesa-libgbm
+    echo "📦 Downloading statically compiled FFmpeg for Amazon Linux..."
+    curl -O https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+    tar xf ffmpeg-release-amd64-static.tar.xz
+    sudo mv ffmpeg-*-amd64-static/ffmpeg /usr/local/bin/
+    sudo mv ffmpeg-*-amd64-static/ffprobe /usr/local/bin/
+    rm -rf ffmpeg-*-amd64-static*
+  else
+    # CentOS / RHEL can use EPEL
+    sudo yum install -y epel-release || true
+    sudo yum install -y Xvfb pulseaudio ffmpeg curl git \
+      alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
+      libXcomposite libXcursor libXdamage libXext libXi libXrandr \
+      libXtst pango mesa-libgbm
+  fi
 else
   echo "❌ Unsupported OS: $OS. Please use Ubuntu or Amazon Linux."
   exit 1
