@@ -104,11 +104,25 @@ npm install
 # Install Playwright browsers (Wait for npm install to finish first!)
 npx playwright install chromium
 npx playwright install-deps chromium
-
-# One-time Slack login (opens a browser window)
-# Log in as the bot user account, then close the window
-DISPLAY=:99 node scripts/login-slack.js
 ```
+
+#### Authentication
+You must log into Slack once to create a persistent session block.
+
+**If you are on a desktop (Local):**
+```bash
+node scripts/login-slack.js
+# A window will open. Log in as the bot user, then close the window.
+```
+
+**If you are on a headless server (AWS EC2 / Cloud VM):**
+Because you cannot see the browser on a headless cloud server, you must generate the session locally on your own computer first:
+1. Clone this project on your *local personal computer* (Mac/Windows).
+2. Run `npm install` and `node scripts/login-slack.js` locally.
+3. Log into Slack when the browser opens.
+4. Compress the generated session folder: `tar -czvf session.tar.gz ./data/slack-session`
+5. Upload `session.tar.gz` to your EC2 instance (e.g., via `scp`).
+6. On the EC2 server, extract it: `tar -xzvf session.tar.gz`
 
 ### Step 6: Start the Bot
 

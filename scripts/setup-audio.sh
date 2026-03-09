@@ -30,7 +30,7 @@ elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
     sudo yum install --allowerasing -y Xvfb pulseaudio curl-minimal git tar \
       alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
       libXcomposite libXcursor libXdamage libXext libXi libXrandr \
-      libXtst pango mesa-libgbm
+      libXtst pango mesa-libgbm libxkbcommon
 
     echo "📦 Downloading statically compiled FFmpeg for Amazon Linux..."
     curl -O https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
@@ -44,7 +44,7 @@ elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
     sudo yum install -y Xvfb pulseaudio ffmpeg curl git \
       alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
       libXcomposite libXcursor libXdamage libXext libXi libXrandr \
-      libXtst pango mesa-libgbm
+      libXtst pango mesa-libgbm libxkbcommon
   fi
 else
   echo "❌ Unsupported OS: $OS. Please use Ubuntu or Amazon Linux."
