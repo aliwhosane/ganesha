@@ -26,8 +26,8 @@ elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
   
   # Amazon Linux 2023 deliberately dropped EPEL support. We install a static ffmpeg binary instead.
   if [[ "$OS" == "amzn" ]]; then
-    # Install base dependencies and Chromium required shared libraries
-    sudo yum install -y Xvfb pulseaudio curl git tar \
+    # Install base dependencies and Chromium required shared libraries (AL2023 prefers curl-minimal)
+    sudo yum install --allowerasing -y Xvfb pulseaudio curl-minimal git tar \
       alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
       libXcomposite libXcursor libXdamage libXext libXi libXrandr \
       libXtst pango mesa-libgbm
@@ -59,7 +59,7 @@ if ! command -v node &> /dev/null; then
     sudo apt install -y nodejs
   elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
     curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
-    sudo yum install -y nodejs npm
+    sudo yum install --allowerasing -y nodejs npm
   fi
 fi
 echo "✅ Node.js $(node --version)"
