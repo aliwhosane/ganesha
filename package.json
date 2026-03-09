@@ -1,0 +1,22 @@
+{
+  "name": "huddle-minutes-bot",
+  "version": "1.0.0",
+  "description": "Slack bot that auto-joins huddles and generates AI-powered meeting minutes",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "login": "node scripts/login-slack.js",
+    "test-audio": "node scripts/test-audio.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "@slack/bolt": "^4.1.0",
+    "@slack/web-api": "^7.8.0",
+    "dotenv": "^16.4.0",
+    "playwright": "^1.50.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
