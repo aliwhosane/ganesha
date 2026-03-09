@@ -2,7 +2,7 @@
 
 Slack bot that **automatically joins huddles**, **records audio**, and **generates AI-powered meeting minutes** — in English, even from Hindi/Hinglish conversations.
 
-**Cost**: ~$3.40/month for 100 meetings (Gemini API only, server is free).
+**Cost**: ~$18.58/month for 100 meetings (Gemini API + AWS t3.small server).
 
 ---
 
@@ -34,7 +34,7 @@ The bot understands **Hindi**, **Hinglish** (Hindi-English mix), and **English**
 
 ### Prerequisites
 
-- [Oracle Cloud Free Tier](https://cloud.oracle.com/free) account (or any Linux server with 2GB+ RAM)
+- AWS account with EC2 (Ubuntu or Amazon Linux) running (any Linux server with 2GB+ RAM)
 - [Slack workspace](https://slack.com) (you're an admin)
 - [Google AI Studio API key](https://aistudio.google.com/apikey)
 
@@ -71,9 +71,13 @@ Create a separate Slack user for the bot (e.g., `meeting-bot@yourcompany.com`). 
 
 ### Step 3: Set Up the Server
 
-SSH into your Oracle Cloud VM:
+SSH into your AWS EC2 instance:
 
 ```bash
+# Install git (if not already installed)
+# For Ubuntu: sudo apt update && sudo apt install -y git
+# For Amazon Linux: sudo yum update -y && sudo yum install -y git
+
 # Clone the project
 git clone <your-repo-url>
 cd ganesha
@@ -184,9 +188,10 @@ node scripts/test-audio.js path/to/meeting-recording.mp3
 
 | Component | Cost |
 |---|---|
-| Oracle Cloud VM | **$0/month** (free tier forever) |
+| AWS EC2 Instance (t3.small) | **~$15.18/month** (required for 2GB RAM) |
 | Gemini 3.1 Flash Lite (30-min meeting) | **~$0.034** |
-| 100 meetings/month | **~$3.40/month** |
+| 100 meetings/month | **~$3.40/month** (API) + **$15.18** (Server) |
+| **Total Estimated Cost** | **~$18.58/month** |
 
 ---
 

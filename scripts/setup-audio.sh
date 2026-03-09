@@ -1,31 +1,46 @@
 #!/bin/bash
 # ============================================================
 # Server Setup Script for Huddle Minutes Bot
-# Run this on your Oracle Cloud Free Tier (Ubuntu/Oracle Linux)
+# Run this on your AWS EC2 Instance (Ubuntu or Amazon Linux)
 # ============================================================
 
 set -e
 
 echo "🔧 Setting up Huddle Minutes Bot server..."
 
-# Update system
-echo "📦 Updating system packages..."
-sudo apt update && sudo apt upgrade -y
+# Detect OS and set package manager
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
+  OS=$ID
+else
+  echo "❌ Could not detect OS."
+  exit 1
+fi
 
-# Install dependencies
-echo "📦 Installing Xvfb, PulseAudio, FFmpeg..."
-sudo apt install -y \
-  xvfb \
-  pulseaudio \
-  ffmpeg \
-  curl \
-  git
+echo "📦 Updating system packages and installing dependencies..."
+if [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
+  sudo apt update && sudo apt upgrade -y
+  sudo apt install -y xvfb pulseaudio ffmpeg curl git
+elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
+  sudo yum update -y
+  
+  # For Amazon Linux 2023, some packages from EPEL/CodeReady might be needed, but these are standard
+  sudo yum install -y Xvfb pulseaudio ffmpeg curl git
+else
+  echo "❌ Unsupported OS: $OS. Please use Ubuntu or Amazon Linux."
+  exit 1
+fi
 
 # Install Node.js 20 LTS
 if ! command -v node &> /dev/null; then
   echo "📦 Installing Node.js 20..."
-  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-  sudo apt install -y nodejs
+  if [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt install -y nodejs
+  elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
+    curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+    sudo yum install -y nodejs
+  fi
 fi
 echo "✅ Node.js $(node --version)"
 
