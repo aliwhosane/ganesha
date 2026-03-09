@@ -24,8 +24,16 @@ if [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
 elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
   sudo yum update -y
   
+  # Enable EPEL and RPMFusion repositories (ffmpeg is not in default Amazon Linux repos)
+  if [[ "$OS" == "amzn" ]]; then
+    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm || true
+    sudo yum install -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm || true
+  else 
+    sudo yum install -y epel-release || true
+  fi
+
   # Install base dependencies and Chromium required shared libraries
-  sudo yum install -y Xvfb pulseaudio ffmpeg curl git \
+  sudo yum install --enablerepo=rpmfusion-free-updates -y Xvfb pulseaudio ffmpeg curl git \
     alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
     libXcomposite libXcursor libXdamage libXext libXi libXrandr \
     libXtst pango mesa-libgbm
