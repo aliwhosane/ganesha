@@ -24,8 +24,11 @@ if [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
 elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
   sudo yum update -y
   
-  # For Amazon Linux 2023, some packages from EPEL/CodeReady might be needed, but these are standard
-  sudo yum install -y Xvfb pulseaudio ffmpeg curl git
+  # Install base dependencies and Chromium required shared libraries
+  sudo yum install -y Xvfb pulseaudio ffmpeg curl git \
+    alsa-lib at-spi2-atk at-spi2-core atk cups-libs libdrm \
+    libXcomposite libXcursor libXdamage libXext libXi libXrandr \
+    libXtst pango mesa-libgbm
 else
   echo "❌ Unsupported OS: $OS. Please use Ubuntu or Amazon Linux."
   exit 1
@@ -39,7 +42,7 @@ if ! command -v node &> /dev/null; then
     sudo apt install -y nodejs
   elif [[ "$OS" == "amzn" || "$OS" == "centos" || "$OS" == "rhel" ]]; then
     curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
-    sudo yum install -y nodejs
+    sudo yum install -y nodejs npm
   fi
 fi
 echo "✅ Node.js $(node --version)"
@@ -49,11 +52,6 @@ if ! command -v pm2 &> /dev/null; then
   echo "📦 Installing PM2..."
   sudo npm install -g pm2
 fi
-
-# Install Playwright browsers
-echo "📦 Installing Playwright Chromium..."
-npx playwright install chromium
-npx playwright install-deps chromium
 
 # Setup PulseAudio virtual sink
 echo "🔊 Configuring PulseAudio virtual audio sink..."
@@ -127,6 +125,8 @@ echo ""
 echo "Next steps:"
 echo "  1. Copy .env.example to .env and fill in your tokens"
 echo "  2. Run: npm install"
-echo "  3. Run: node scripts/login-slack.js  (one-time Slack login)"
-echo "  4. Run: pm2 start src/app.js --name huddle-bot"
+echo "  3. Run: npx playwright install chromium"
+echo "  4. Run: npx playwright install-deps chromium"
+echo "  5. Run: node scripts/login-slack.js  (one-time Slack login)"
+echo "  6. Run: pm2 start src/app.js --name huddle-bot"
 echo ""

@@ -101,6 +101,10 @@ nano .env
 # Install npm dependencies
 npm install
 
+# Install Playwright browsers (Wait for npm install to finish first!)
+npx playwright install chromium
+npx playwright install-deps chromium
+
 # One-time Slack login (opens a browser window)
 # Log in as the bot user account, then close the window
 DISPLAY=:99 node scripts/login-slack.js
